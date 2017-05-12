@@ -18,6 +18,7 @@
 #include "HiggsAnalysis/CombinedLimit/interface/utils.h"
 
 using namespace RooStats;
+using namespace boost::math;
 
 int BayesianToyMC::numIters_ = 1000;
 std::string BayesianToyMC::integrationType_ = "toymc";

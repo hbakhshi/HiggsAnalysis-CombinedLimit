@@ -1,6 +1,7 @@
 #ifndef VectorizedCBShape_h
 #define VectorizedCBShape_h
 
+#include "vdt/exp.h"
 #include <RooCBShape.h>
 #include <RooAbsData.h>
 #include <vector>

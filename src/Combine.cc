@@ -173,6 +173,11 @@ void Combine::applyOptions(const boost::program_options::variables_map &vm) {
   bypassFrequentistFit_ = vm.count("bypassFrequentistFit");
   overrideSnapshotMass_ = vm.count("overrideSnapshotMass");
   mass_ = vm["mass"].as<float>();
+  //
+  ct_ = vm["ct"].as<float>();
+  cv_ = vm["cv"].as<float>();
+  // cp_ = vm["cp"].as<float>();
+  //
   saveToys_ = vm.count("saveToys");
   validateModel_ = vm.count("validateModel");
   const std::string &method = vm["method"].as<std::string>();
@@ -301,13 +306,25 @@ void Combine::run(TString hlfFile, const std::string &dataset, double &limit, do
         throw std::invalid_argument("Missing Workspace"); 
     }
 
-
+ 
     if (verbose > 3) { std::cout << "Input workspace '" << workspaceName_ << "': \n"; w->Print("V"); }
     RooRealVar *MH = w->var("MH");
     if (MH!=0) {
       if (verbose > 2) std::cerr << "Setting variable 'MH' in workspace to the higgs mass " << mass_ << std::endl;
       MH->setVal(mass_);
     }
+
+    RooRealVar* CT = w->var("CT");
+    if( CT ){
+      std::cerr << "Setting variable 'CT' in workspace to the ct " << ct_ << std::endl;
+      CT->setVal( ct_ );
+    }
+    RooRealVar* CV = w->var("CV");
+    if( CV ){
+      std::cerr << "Setting variable 'CV' in workspace to the cv " << cv_ << std::endl;
+      CV->setVal( cv_ );
+    }
+    
     mc       = dynamic_cast<RooStats::ModelConfig *>(w->genobj(modelConfigName_.c_str()));
     mc_bonly = dynamic_cast<RooStats::ModelConfig *>(w->genobj(modelConfigNameB_.c_str()));
 

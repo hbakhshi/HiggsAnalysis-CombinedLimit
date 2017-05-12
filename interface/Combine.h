@@ -83,7 +83,9 @@ private:
   bool validateModel_;
   bool saveToys_;
   double mass_;
-
+  //
+  double ct_,cv_,cp_;
+  
   // implementation-related variables
   bool compiledExpr_;
   bool makeTempDir_;

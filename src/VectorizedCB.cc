@@ -1,9 +1,12 @@
+#include "vdtMath.h"
 #include "HiggsAnalysis/CombinedLimit/interface/VectorizedCB.h"
 #include "RooMath.h"
 #include "vectorized.h"
 #include "HiggsAnalysis/CombinedLimit/interface/ProfilingTools.h"
 #include <RooRealVar.h>
 #include <stdexcept>
+
+
 
 VectorizedCBShape::VectorizedCBShape(const RooCBShape &gaus, const RooAbsData &data, bool includeZeroWeights)
 {

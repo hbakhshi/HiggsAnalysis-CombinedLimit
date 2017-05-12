@@ -35,7 +35,7 @@ int main(int argc, char **argv) {
 
   string name;
   string datacard, dataset;
-  float iMass;
+  float iMass, iCt, iCv ;
   string whichMethod, whichHintMethod;
   int runToys;
   int    seed;
@@ -84,6 +84,8 @@ int main(int argc, char **argv) {
   combiner.ioOptions().add_options()
     ("name,n",     po::value<string>(&name)->default_value("Test"), "Name of the job, affects the name of the output tree")
     ("mass,m",     po::value<float>(&iMass)->default_value(120.), "Higgs mass to store in the output tree")
+    ("cv",         po::value<float>(&iCv)->default_value(1.), "Higgs-w coupling to store in the output tree")
+    ("ct",         po::value<float>(&iCt)->default_value(1.), "Higgs-top coupling to store in the output tree")
     ("dataset,D",  po::value<string>(&dataset)->default_value("data_obs"), "Name of the dataset for observed limit")
     ("toysFile",   po::value<string>(&toysFile)->default_value(""), "Read toy mc or other intermediate results from this file")
     ;

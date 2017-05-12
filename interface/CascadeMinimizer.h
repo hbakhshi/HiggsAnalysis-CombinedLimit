@@ -8,6 +8,7 @@ class RooRealVar;
 #include <RooListProxy.h>
 #include <RooSetProxy.h>
 #include "HiggsAnalysis/CombinedLimit/interface/RooMinimizerOpt.h"
+#include <sstream>
 #include <boost/program_options.hpp>
 
 class CascadeMinimizer {
