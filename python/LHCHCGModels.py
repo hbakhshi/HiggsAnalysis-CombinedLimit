@@ -630,12 +630,13 @@ class KappaVKappaT(LHCHCGBaseModel):
 
     For tHq multilepton analysis (HIG-17-005)
     """
-    def __init__(self,resolved=True,BRU=True,addInvisible=False,coupleTopTau=False):
+    def __init__(self,resolved=True,BRU=True,addInvisible=False,coupleTopTau=False,signals="ALL"):
         LHCHCGBaseModel.__init__(self) # not using 'super(x,self).__init__' since I don't understand it
         self.doBRU = BRU
         self.resolved = resolved
         self.addInvisible = addInvisible
         self.coupleTopTau = coupleTopTau
+        self.Signals = signals
     def setPhysicsOptions(self,physOptions):
         self.setPhysicsOptionsBase(physOptions)
         for po in physOptions:
@@ -645,6 +646,8 @@ class KappaVKappaT(LHCHCGBaseModel):
     def doParametersOfInterest(self):
         """Create POI out of signal strength and MH"""
         self.modelBuilder.doVar("r[1,0.0,10.0]")
+        if self.Signals != "ALL" :
+            self.modelBuilder.doVar("r2[1]")
         self.modelBuilder.doVar("kappa_V[1,0.0,2.0]")
         self.modelBuilder.doVar("kappa_t[1,-10.0,10.0]")
         self.modelBuilder.doVar("kappa_mu[1,0.0,5.0]")
@@ -754,14 +757,14 @@ class KappaVKappaT(LHCHCGBaseModel):
             if not self.modelBuilder.out.function("c7_BRscal_"+BRscal):
                 raise RuntimeError, "Decay mode %s not supported" % decay
             if decay == "hss": BRscal = "hbb"
-            if production in ['tHq', 'tHW', 'ttH']:
+            if self.Signals == "ALL" :
                 self.modelBuilder.factory_('expr::%s("%s*@1*@2", %s, c7_BRscal_%s, r)' % (name, XSscal[0], XSscal[1], BRscal))
-            elif production == "ggH" and (decay in self.add_bbH) and energy in ["7TeV","8TeV","13TeV","14TeV"]:
-                b2g = "CMS_R_bbH_ggH_%s_%s[%g]" % (decay, energy, 0.01)
-                b2gs = "CMS_bbH_scaler_%s" % energy
-                self.modelBuilder.factory_('expr::%s("(%s + @1*@1*@2*@3)*@4", %s, kappa_b, %s, %s, c7_BRscal_%s)' % (name, XSscal[0], XSscal[1], b2g, b2gs, BRscal))
-            else:
-                self.modelBuilder.factory_('expr::%s("%s*@1*@2", %s, c7_BRscal_%s,r)' % (name, XSscal[0], XSscal[1], BRscal))
+            else :
+                if production in self.Signals : # ['tHq', 'tHW', 'ttH']:
+                    self.modelBuilder.factory_('expr::%s("%s*@1*@2", %s, c7_BRscal_%s, r)' % (name, XSscal[0], XSscal[1], BRscal))
+                else :
+                    self.modelBuilder.factory_('expr::%s("%s*@1*@2", %s, c7_BRscal_%s, r2)' % (name, XSscal[0], XSscal[1], BRscal))
+
             print '[LHC-HCG Kappas]', name, production, decay, energy,": ",
             self.modelBuilder.out.function(name).Print("")
         return name
@@ -1118,3 +1121,7 @@ K4 = KappaVKappaT(resolved=True)
 K5 = KappaVKappaT(resolved=False)
 K6 = KappaVKappaT(resolved=False, coupleTopTau=True)
 K7 = KappaVKappaT(resolved=True, coupleTopTau=True)
+K6TH = KappaVKappaT(resolved=False, coupleTopTau=True , signals = ["tHq" , "tHW"])
+K7TH = KappaVKappaT(resolved=True, coupleTopTau=True , signals = ["tHq" , "tHW"])
+K6THTTH = KappaVKappaT(resolved=False, coupleTopTau=True  , signals = ["tHq" , "tHW" , "ttH"])
+K7THTTH = KappaVKappaT(resolved=True, coupleTopTau=True  , signals = ["tHq" , "tHW" , "ttH"])

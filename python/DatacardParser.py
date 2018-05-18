@@ -164,7 +164,11 @@ def parseCard(file, options):
                 if sigline == []:     raise RuntimeError, "Missing line with process id before rate line"
                 if len(f[1:]) != len(ret.keyline): raise RuntimeError, "Malformed rate line: length %d, while bins and process lines have length %d" % (len(f[1:]), len(ret.keyline))
                 for (b,p,s),r in zip(ret.keyline,f[1:]):
-                    ret.exp[b][p] = float(r)
+                    try:
+                        ret.exp[b][p] = float(r)
+                    except ValueError:
+                        #print r, "is not a number and is kept as it is"
+                        ret.exp[b][p] = r
                 break # rate is the last line before nuisances
         # parse nuisances
         for lineNumber,l in enumerate(file):
@@ -339,6 +343,9 @@ def parseCard(file, options):
     return ret
 
 def FloatToString(inputValue):
+    if type(inputValue) is str :
+        #print inputValue, " is not a number and is kept as it is"
+        return inputValue
     return ('%.10f' % inputValue).rstrip('0').rstrip('.')
 def FloatToStringScientific(inputValue,etype='e'):
     s = FloatToString(inputValue)
